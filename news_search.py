@@ -1,6 +1,18 @@
 import logging
 import requests
 from bs4 import BeautifulSoup
+import sqlite3
+from sqlite3 import Error
+
+def create_connection(path):
+    connection = None
+    try:
+        connection = sqlite3.connect(path)
+        print("Connect to SQLite DB succuessful")
+    except Error as e:
+        print(f"The error '{e}' occured")
+
+    return connection
 
 logging.basicConfig(level=logging.DEBUG, format=' %(levelname)s - %(message)s')
 
@@ -20,3 +32,5 @@ if page.status_code == requests.codes.ok:
     for title in titles:
         if 'china' in title.text.lower():
             print(title.text)
+
+connection = create_connection("nyt_sqlitedb")
