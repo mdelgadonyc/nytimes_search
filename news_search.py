@@ -1,16 +1,17 @@
+import logging
 import requests
 from bs4 import BeautifulSoup
+
+logging.basicConfig(level=logging.DEBUG, format=' %(levelname)s - %(message)s')
 
 # Obtain NYTimes RSS Feed
 nytRSSUrl = 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml'
 
 # Fetch the given url using requests;
 page = requests.get(nytRSSUrl)
-print("status code: " + str(page.status_code))
+logging.debug("status code: " + str(page.status_code))
 
-if page.status_code == 200:
-    # print(page.text)
-    
+if page.status_code == requests.codes.ok:
     # Parse the XML with BeautifulSoup 
     soup = BeautifulSoup(page.text, "xml")
     
