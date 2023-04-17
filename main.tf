@@ -8,4 +8,6 @@ resource "aws_db_instance" "rds" {
     username                = var.username
     password                = var.password
     parameter_group_name    = var.parameter_group_name
+    publicly_accessible     = true
+    skip_final_snapshot     = true
 }
