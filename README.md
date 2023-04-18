@@ -17,8 +17,11 @@ echo "# nytimes_search" >> README.md
 # Retrieve all titles mentioning China
 
 
-# Store these titles in an Amazon RDS database
-    # Use Terraform to create an RDS database
-    (Example) https://adamtheautomator.com/terraform-and-aws-rds/
+# Store these titles in an Sqlite database
 
 # Return a list of these titles via an API endpoint (ie https://.../china)
+    # Create API with Flask
+        # pip3 install Flask
+
+    # Run flask app serving titles
+    # flask -app serve.py run
