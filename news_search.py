@@ -4,6 +4,13 @@ from bs4 import BeautifulSoup
 import sqlite3
 from sqlite3 import Error
 
+def convertDate(dateStr):
+    day, month, year = dateStr.split()
+    monthDict={'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 'May':'05', 'Jun':'06', 'Jul':'07', 'Aug':'08', 'Sep':'09', 'Oct':'10', 'Nov':'11', 'Dec':'12'}
+    month = monthDict[month]
+
+    return f'{year}-{month}-{day}'
+
 def create_connection(path):
     connection = None
     try:
@@ -23,6 +30,16 @@ def execute_query(connection, query):
     except Error as e:
         print(f"The error '{e}' occurred")
 
+def execute_read_query(connection, query):
+    cursor = connection.cursor()
+    result = None
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result
+    except Error as e:
+        print(f"The error '{e}' occurred")
+
 logging.basicConfig(level=logging.DEBUG, format=' %(levelname)s - %(message)s')
 
 # Obtain NYTimes RSS Feed
@@ -32,60 +49,42 @@ nytRSSUrl = 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml'
 page = requests.get(nytRSSUrl)
 logging.debug("status code: " + str(page.status_code))
 
+connection = create_connection("nyt_sqlitedb")
+
+create_china_table = """
+    CREATE TABLE IF NOT EXISTS china_table (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        link TEXT NOT NULL,
+        date TEXT NOT NULL
+    );
+"""
+
+
 if page.status_code == requests.codes.ok:
     # Parse the XML with BeautifulSoup 
     soup = BeautifulSoup(page.text, "xml")
+
+    execute_query(connection, create_china_table)    
+              
+    create_articles = """
+    INSERT INTO
+        china_table (title, link, date)
+    VALUES"""
     
-    # Retrieve all titles mentioning China
-    titles = soup.find_all('title')
-    for title in titles:
-        if 'china' in title.text.lower():
-            print(title.text)
+    # Locate all RSS feed items mentioning China
+    items = soup.find_all('item')
+    for item in items:
+        if 'china' in item.title.text.lower():
+            create_articles += f"('{item.title.text}', '{item.link.text}', '{convertDate(item.pubDate.text[5:16])}'),"
+    
+    create_articles = create_articles[:-1] + ';'
 
-connection = create_connection("nyt_sqlitedb")
+    execute_query(connection, create_articles)
 
-create_users_table = """
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        age INTEGER,
-        gender TEXT,
-        nationality TEXT
-    );
-"""
 
-execute_query(connection, create_users_table)
+select_articles = "SELECT * from china_table"
+articles = execute_read_query(connection, select_articles)
 
-create_posts_table = """
-    CREATE TABLE IF NOT EXISTS posts(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    user_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id)
-    );
-"""
-
-execute_query(connection, create_posts_table)
-
-create_comments_table = """
-    CREATE TABLE IF NOT EXISTS comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    text TEXT NOT NULL,
-    user_id INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) FOREIGN KEY (post_id) REFERENCES posts (id)
-    );
-"""
-
-create_likes_table = """
-    CREATE TABLE IF NOT EXISTS likes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) FOREIGN KEY (post_id) REFERENCES posts (id)
-    );
-"""
-
-execute_query(connection, create_comments_table)
-execute_query(connection, create_likes_table)
+for article in articles:
+    print(article)
