@@ -2,6 +2,7 @@
 
 nytimes_search is a web scraper that searches the NYTimes RSS feed to parse and extract stories about China, storing the result in an SQLite database for later retrieval.
 
+
 ## Table of Contents
 
 - [Installation](#Installation)
@@ -40,6 +41,8 @@ To install nytimes_search locally:
     $ `python3 serve.py `
 
 2. ### Navigate your browser to port 5000 on the localhost (URL: 127.0.0.1:5000)
+
+![nytimes_screenshot](https://github.com/mdelgadonyc/nytimes_search/assets/17136771/8d6bc1e0-2359-4940-b40c-32dfccc53491)
 
 ## Contributing
 
