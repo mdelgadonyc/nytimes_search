@@ -1,5 +1,4 @@
-from flask import Flask
-from markupsafe import escape
+from flask import Flask, render_template
 import sqlite3
 from sqlite3 import Error
 import subprocess
@@ -9,8 +8,8 @@ app.debug = True
 
 
 @app.route('/')
-def heart_flask():
-    return "<p>Thanks for visiting!</p>"
+def index():
+    return render_template('index.html')
 
 
 @app.route('/china')
