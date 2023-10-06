@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>China articles</title>
+</head>
+<body>
+    <h1>China articles</h1>
+    <ul>
+        {% for article in articles %}
+        <li> <a href="{{article[2]}}">{{article[1]}}</a>, {{article[3]}}.</li>
+        {% endfor %}
+    </ul>
+    <p>Return to the nytimes_search app <a href="{{url_for('index')}}">home page</a>.</p>
+</body>
+</html>

@@ -14,15 +14,13 @@ def index():
 
 @app.route('/china')
 def china_articles():
-    article_entries = ""
-
     connection = create_connection("nyt_sqlitedb")
 
     select_articles = "SELECT * from china_table"
     articles = execute_read_query(connection, select_articles)
 
-    for article in articles:
-        article_entries += article[1] + '<br>'
+    return render_template('china.html', articles=articles)
+
 
 @app.route('/update')
 def update():
