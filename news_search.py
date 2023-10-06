@@ -4,22 +4,26 @@ from bs4 import BeautifulSoup
 import sqlite3
 from sqlite3 import Error
 
-def convertDate(dateStr):
+
+def convert_date(dateStr):
     day, month, year = dateStr.split()
-    monthDict={'Jan':'01', 'Feb':'02', 'Mar':'03', 'Apr':'04', 'May':'05', 'Jun':'06', 'Jul':'07', 'Aug':'08', 'Sep':'09', 'Oct':'10', 'Nov':'11', 'Dec':'12'}
+    monthDict = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08',
+                 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
     month = monthDict[month]
 
     return f'{year}-{month}-{day}'
+
 
 def create_connection(path):
     connection = None
     try:
         connection = sqlite3.connect(path)
-        print("Connect to SQLite DB succuessful")
+        print("Connect to SQLite DB successful")
     except Error as e:
-        print(f"The error '{e}' occured")
+        print(f"The error '{e}' occurred")
 
     return connection
+
 
 def execute_query(connection, query):
     cursor = connection.cursor()
@@ -30,6 +34,7 @@ def execute_query(connection, query):
     except Error as e:
         print(f"The error '{e}' occurred")
 
+
 def execute_read_query(connection, query):
     cursor = connection.cursor()
     result = None
@@ -39,6 +44,7 @@ def execute_read_query(connection, query):
         return result
     except Error as e:
         print(f"The error '{e}' occurred")
+
 
 logging.basicConfig(level=logging.DEBUG, format=' %(levelname)s - %(message)s')
 
@@ -65,23 +71,22 @@ if page.status_code == requests.codes.ok:
     # Parse the XML with BeautifulSoup 
     soup = BeautifulSoup(page.text, "xml")
 
-    execute_query(connection, create_china_table)    
-              
+    execute_query(connection, create_china_table)
+
     create_articles = """
     INSERT INTO
         china_table (title, link, date)
     VALUES"""
-    
+
     # Locate all RSS feed items mentioning China
     items = soup.find_all('item')
     for item in items:
         if 'china' in item.title.text.lower():
-            create_articles += f"('{item.title.text}', '{item.link.text}', '{convertDate(item.pubDate.text[5:16])}'),"
-    
+            create_articles += f"('{item.title.text}', '{item.link.text}', '{convert_date(item.pubDate.text[5:16])}'),"
+
     create_articles = create_articles[:-1] + ';'
 
     execute_query(connection, create_articles)
-
 
 select_articles = "SELECT * from china_table"
 articles = execute_read_query(connection, select_articles)
