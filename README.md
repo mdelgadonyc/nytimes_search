@@ -11,20 +11,28 @@ nytimes_search is a web scraper that searches the NYTimes RSS feed to parse and 
 
 ## Installation
 
-### Create a virtual environment for project
-$ `sudo apt install python3-venv`  
-$ `python3 -m venv .venv_nytimes`  
-$ `source  venv/bin/activate`
+To install nytimes_search locally:
 
-### Install requests for handling HTTP
-$ `pip3 install requests`  
+1. ### Clone this repository
+   
+2. ### Create a virtual environment for project
+   
+    $ `sudo apt install python3-venv`  
+    $ `python3 -m venv .venv_nytimes`  
+    $ `source .venv_nytimes/bin/activate`
 
-### Parse the XML with BeautifulSoup
-$ `pip3 install beautifulsoup4`  
-$ `pip3 install lxml`
+3. ### Install requests for handling HTTP
+   
+    $ `pip3 install requests`  
 
-### Flask handles API
-$ `pip3 install Flask`
+4. ### Parse the XML with BeautifulSoup
+   
+    $ `pip3 install beautifulsoup4`  
+    $ `pip3 install lxml`
+
+5. ### Flask handles API
+   
+    $ `pip3 install Flask`
 
 ## Usage
 ### Run flask app serving titles
