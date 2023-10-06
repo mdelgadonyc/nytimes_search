@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 import sqlite3
 from sqlite3 import Error
 import subprocess
@@ -18,6 +18,8 @@ def china_articles():
 
     select_articles = "SELECT * from china_table"
     articles = execute_read_query(connection, select_articles)
+    if articles == "Error":
+        return redirect('update')
 
     return render_template('china.html', articles=articles)
 
@@ -57,9 +59,14 @@ def execute_read_query(connection, query):
     try:
         cursor.execute(query)
         result = cursor.fetchall()
-        return result
     except Error as e:
-        print(f"The error '{e}' occurred")
+        result = "Error"
+        if "no such table" in str(e):
+            print("Table doesn't exist. Redirecting to the news_search database update script...")
+        else:
+            print(f"The error '{e}' occurred")
+
+    return result
 
 
 if __name__ == '__main__':
