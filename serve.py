@@ -2,6 +2,7 @@ from flask import Flask
 from markupsafe import escape
 import sqlite3
 from sqlite3 import Error
+import subprocess
 
 app = Flask(__name__)
 app.debug = True
@@ -24,7 +25,13 @@ def china_articles():
     for article in articles:
         article_entries += article[1] + '<br>'
 
-    return article_entries
+@app.route('/update')
+def update():
+    # Run the news_search.py script to update our local article SQLite database
+    script_path = './news_search.py'
+    subprocess.run(['python3', script_path])
+    return render_template('update.html')
+
 
 def create_connection(path):
     connection = None
