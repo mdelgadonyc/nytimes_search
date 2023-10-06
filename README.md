@@ -2,18 +2,25 @@
 
 nytimes_search is a web scraper that searches the NYTimes RSS feed to parse and extract stories about China, storing the result in an SQLite database for later retrieval.
 
+## Table of Contents
+
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [Contributing](#Contributing)
+- [License](#License)
+
 ## Installation
 
 ### Create a virtual environment for project
-$ `sudo apt install python3-venv`\
-$ `python3 -m venv .venv_nytimes`\
+$ `sudo apt install python3-venv`  
+$ `python3 -m venv .venv_nytimes`  
 $ `source  venv/bin/activate`
 
 ### Install requests for handling HTTP
-$ `pip3 install requests`
+$ `pip3 install requests`  
 
 ### Parse the XML with BeautifulSoup
-$ `pip3 install beautifulsoup4`\
+$ `pip3 install beautifulsoup4`  
 $ `pip3 install lxml`
 
 ### Flask handles API
