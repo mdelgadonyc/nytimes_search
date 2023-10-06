@@ -31,6 +31,13 @@ def execute_query(connection, query):
         cursor.execute(query)
         connection.commit()
         print("Query executed successfully")
+    except sqlite3.IntegrityError as e:
+        # Check if the error code is SQLITE_CONSTRAINT
+        if 'UNIQUE constraint failed' in str(e):
+            # Handle the unique constraint violation error
+            print("A duplicate article detected. Skipping...")
+        else:
+            print("A constraint violation occurred: ", str(e))
     except Error as e:
         print(f"The error '{e}' occurred")
 
@@ -60,12 +67,11 @@ connection = create_connection("nyt_sqlitedb")
 create_china_table = """
     CREATE TABLE IF NOT EXISTS china_table (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
+        title TEXT UNIQUE NOT NULL,
         link TEXT NOT NULL,
         date TEXT NOT NULL
     );
 """
-
 
 if page.status_code == requests.codes.ok:
     # Parse the XML with BeautifulSoup 
