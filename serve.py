@@ -4,6 +4,8 @@ import sqlite3
 from sqlite3 import Error
 
 app = Flask(__name__)
+app.debug = True
+
 
 @app.route('/')
 def heart_flask():
@@ -34,6 +36,7 @@ def create_connection(path):
 
     return connection
 
+
 def execute_query(connection, query):
     cursor = connection.cursor()
     try:
@@ -42,6 +45,7 @@ def execute_query(connection, query):
         print("Query executed successfully")
     except Error as e:
         print(f"The error '{e}' occurred")
+
 
 def execute_read_query(connection, query):
     cursor = connection.cursor()
@@ -54,3 +58,5 @@ def execute_read_query(connection, query):
         print(f"The error '{e}' occurred")
 
 
+if __name__ == '__main__':
+    app.run()
