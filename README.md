@@ -36,7 +36,7 @@ To install nytimes_search locally:
 
 ## Usage
 
-1. ### Run our flask app serve.py
+1. ### Run the flask app serve.py
     $ `python3 serve.py `
 
 2. ### Navigate your browser to port 5000 on the localhost (URL: 127.0.0.1:5000)
